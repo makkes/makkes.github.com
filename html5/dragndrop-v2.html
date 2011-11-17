@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+
+<title>HTML5 Drag'n'Drop test</title>
+<style type="text/css">
+body {
+    font-family:sans-serif;
+    background-image:url('firefox-bg.png');
+    background-repeat:no-repeat;
+    background-color:#000000;
+    background-attachment:fixed;
+}
+</style>
+
+<script language="javascript" type="text/javascript">
+
+var dropbox;
+
+function init() {
+    var content = document.getElementById("content");
+    
+    if(!window.navigator.userAgent.match(/Firefox\/4.0/)) {
+        content.style.marginTop = "100px";
+        content.style.textAlign = "center";
+        content.innerHTML = "Attention: Bleeding edge! Use Firefox 4.0 to make this demo work.";
+    }    
+
+    content.style.display = "block";
+
+    dropbox = document.getElementById("dropzone");
+    dropbox.addEventListener("dragenter", dragenter, false);
+    dropbox.addEventListener("dragover", dragover, false);
+    dropbox.addEventListener("drop", drop, false);
+}
+
+function dragenter(e) {
+  e.stopPropagation();
+  e.preventDefault();
+}
+
+function dragover(e) {
+  e.stopPropagation();
+  e.preventDefault();
+}
+
+function drop(e) {
+  e.stopPropagation();
+  e.preventDefault();
+
+  var dt = e.dataTransfer;
+  var files = dt.files;
+
+  handleFiles(files);
+}
+
+function handleFiles(files) {
+    for(var i = 0; i < files.length; i++) {
+
+        var displayContents = true;
+        
+        if(files[i].fileSize > 1048576) {
+            displayContents = false;
+        }
+        
+        if(!files[i].type.match("^text/.*")) {
+            displayContents = false;
+        }
+
+        var filename = document.getElementById("filename");
+        var result = document.getElementById("result");
+        
+        filename.innerHTML = files[i].name;
+        result.src = files[i].url;
+    }
+}
+
+if(window.addEventListener) {
+    window.addEventListener("load", init, true);
+} else {
+    window.onload = init;
+}
+
+</script>
+
+</head><body>
+
+<div style="width: 700px; margin: 0pt auto;">
+
+    <div id="content" style="display:none; width: 600px; padding: 20px;
+    background-color: rgb(104, 104, 104); background-color: rgba(104,
+ 104, 104, 0.8); color: rgb(255, 255, 255); font-weight: bold; border: 
+5px solid black; margin-top:10px;">
+        <div style="width: 100%; text-align: center;">
+            <div style="font-size: 250%;">Drag a file from your file 
+system onto the target</div>
+            <img id="dropzone" src="target.png">
+        </div>
+        <div>
+        Filename:&nbsp;<span id="filename"></span>
+        </div>
+        <div>
+        <span style="float: left;">Progress:&nbsp;</span>
+        <div style="float: left; background-color: rgb(42, 163, 55); 
+width: 0px;" id="progress">
+            <span id="progressText">0%</span>
+        </div>
+        </div>
+        <br><br>
+        <div style="width: 100%; text-align: center;">
+            <img id="result"></img>
+        </div>
+    </div>
+</div>
+
+</body></html>

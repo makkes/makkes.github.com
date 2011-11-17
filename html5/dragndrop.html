@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+
+<title>HTML5 Drag'n'Drop test</title>
+<style type="text/css">
+body {
+    font-family:sans-serif;
+    background-image:url('firefox-bg.png');
+    background-repeat:no-repeat;
+    background-color:#000000;
+    background-attachment:fixed;
+}
+</style>
+
+<script language="javascript" type="text/javascript">
+
+var dropbox;
+
+function init() {
+    var content = document.getElementById("content");
+    
+    if(!window.navigator.userAgent.match(/Firefox\/3.6/)) {
+        content.style.marginTop = "100px";
+        content.style.textAlign = "center";
+        content.innerHTML = "Give love to the Fox! Use Firefox 3.6 to make this demo work.";
+    }    
+
+    content.style.display = "block";
+
+    dropbox = document.getElementById("dropzone");
+    dropbox.addEventListener("dragenter", dragenter, false);
+    dropbox.addEventListener("dragover", dragover, false);
+    dropbox.addEventListener("drop", drop, false);
+}
+
+function dragenter(e) {
+  e.stopPropagation();
+  e.preventDefault();
+}
+
+function dragover(e) {
+  e.stopPropagation();
+  e.preventDefault();
+}
+
+function drop(e) {
+  e.stopPropagation();
+  e.preventDefault();
+
+  var dt = e.dataTransfer;
+  var files = dt.files;
+
+  handleFiles(files);
+}
+
+function handleFiles(files) {
+    for(var i = 0; i < files.length; i++) {
+
+        var displayContents = true;
+        
+        if(files[i].fileSize > 1048576) {
+            displayContents = false;
+        }
+        
+        if(!files[i].type.match("^text/.*")) {
+            displayContents = false;
+        }
+
+        var reader = new FileReader();
+        
+        var progress = document.getElementById("progress");
+        var progressText = document.getElementById("progressText");
+        var filename = document.getElementById("filename");
+        var result = document.getElementById("result");
+        
+        filename.innerHTML = files[i].name;
+        
+        reader.onprogress = function(e) {
+            var loaded;
+            if(!e.total) {
+                loaded = 1;
+            } else {
+                loaded = e.loaded/e.total;
+            }
+            progressText.innerHTML = Math.round(loaded*100) + "%";
+            progress.style.width = 435 * loaded + "px";
+        }
+        
+        reader.onload = function(e) {
+            var loaded;
+            if(!e.total) {
+                loaded = 1;
+            } else {
+                loaded = e.loaded/e.total;
+            }
+            progressText.innerHTML = Math.round(loaded*100) + "%";
+            progress.style.width = 435 * loaded + "px";
+            if(displayContents) {
+                result.value = reader.result;
+            } else {
+                result.value = "Not displaying file contents since the file is too large or of an unknown type.";
+            }
+        }
+        
+        reader.readAsText(files[i]);
+    }
+}
+
+if(window.addEventListener) {
+    window.addEventListener("load", init, true);
+} else {
+    window.onload = init;
+}
+
+</script>
+
+</head><body>
+
+<div style="width: 700px; margin: 0pt auto;">
+
+    <div id="content" style="display:none; width: 600px; padding: 20px;
+    background-color: rgb(104, 104, 104); background-color: rgba(104,
+ 104, 104, 0.8); color: rgb(255, 255, 255); font-weight: bold; border: 
+5px solid black; margin-top:10px;">
+        <div style="width: 100%; text-align: center;">
+            <div style="font-size: 250%;">Drag a file from your file 
+system onto the target</div>
+            <img id="dropzone" src="target.png">
+        </div>
+        <div>
+        Filename:&nbsp;<span id="filename"></span>
+        </div>
+        <div>
+        <span style="float: left;">Progress:&nbsp;</span>
+        <div style="float: left; background-color: rgb(42, 163, 55); 
+width: 0px;" id="progress">
+            <span id="progressText">0%</span>
+        </div>
+        </div>
+        <br><br>
+        <div style="width: 100%; text-align: center;">
+            <textarea id="result" style="background-color: rgb(255, 255,
+ 255); overflow: auto; border: 1px solid rgb(17, 17, 17); width: 450px; 
+height: 250px; margin: 0pt auto; text-align: left; color: black;"></textarea>
+        </div>
+    </div>
+</div>
+
+</body></html>
