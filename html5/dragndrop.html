@@ -22,13 +22,6 @@ var dropbox;
 
 function init() {
     var content = document.getElementById("content");
-    
-    if(!window.navigator.userAgent.match(/Firefox\/3.6/)) {
-        content.style.marginTop = "100px";
-        content.style.textAlign = "center";
-        content.innerHTML = "Give love to the Fox! Use Firefox 3.6 to make this demo work.";
-    }    
-
     content.style.display = "block";
 
     dropbox = document.getElementById("dropzone");

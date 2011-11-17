@@ -22,13 +22,6 @@ var dropbox;
 
 function init() {
     var content = document.getElementById("content");
-    
-    if(!window.navigator.userAgent.match(/Firefox\/4.0/)) {
-        content.style.marginTop = "100px";
-        content.style.textAlign = "center";
-        content.innerHTML = "Attention: Bleeding edge! Use Firefox 4.0 to make this demo work.";
-    }    
-
     content.style.display = "block";
 
     dropbox = document.getElementById("dropzone");
@@ -74,7 +67,7 @@ function handleFiles(files) {
         var result = document.getElementById("result");
         
         filename.innerHTML = files[i].name;
-        result.src = files[i].url;
+        result.src = window.URL.createObjectURL(files[i]);
     }
 }
 
@@ -88,30 +81,22 @@ if(window.addEventListener) {
 
 </head><body>
 
-<div style="width: 700px; margin: 0pt auto;">
+<div style="width: 100%; margin: 0pt auto;">
 
-    <div id="content" style="display:none; width: 600px; padding: 20px;
+    <div id="content" style="display:none; padding: 20px;
     background-color: rgb(104, 104, 104); background-color: rgba(104,
  104, 104, 0.8); color: rgb(255, 255, 255); font-weight: bold; border: 
 5px solid black; margin-top:10px;">
         <div style="width: 100%; text-align: center;">
-            <div style="font-size: 250%;">Drag a file from your file 
-system onto the target</div>
+            <div style="font-size: 250%;">Drag and drop an image from your file system onto the target</div>
             <img id="dropzone" src="target.png">
         </div>
         <div>
-        Filename:&nbsp;<span id="filename"></span>
-        </div>
-        <div>
-        <span style="float: left;">Progress:&nbsp;</span>
-        <div style="float: left; background-color: rgb(42, 163, 55); 
-width: 0px;" id="progress">
-            <span id="progressText">0%</span>
-        </div>
+            Filename:&nbsp;<span id="filename"></span>
         </div>
         <br><br>
         <div style="width: 100%; text-align: center;">
-            <img id="result"></img>
+            <img style="max-width:100%;" id="result"></img>
         </div>
     </div>
 </div>
