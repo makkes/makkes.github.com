@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width">
+    <title>Desktop Notifications</title>
+    <style>
+    </style>
+    <script>
+        function showNotification() {
+            if(navigator.mozNotification) {
+                var n = navigator.mozNotification.createNotification("Title", "description");
+                n.onclick = function() {
+                    notificationClicked(n);
+                }
+                n.show();
+            }
+            else if(window.webkitNotifications) {
+                var notification = window.webkitNotifications;
+                notification.requestPermission(function() {
+                    if(window.webkitNotifications.checkPermission() == 0) {
+                        var n = notification.createNotification("", "Title", "description");
+                        n.onclick = function() {
+                            notificationClicked(n);
+                        }
+                        n.show();
+                    }
+                });
+            } else {
+                alert("Your browser doesn't support desktop notifications");
+                return;
+            }
+        }
+
+        function notificationClicked(n) {
+            var elem = document.getElementById("feedback");
+            elem.innerHTML = "Thank you and goodbye!";
+            if(n.cancel) {
+                n.cancel();
+            }
+        }
+    </script>
+   </head>
+   <body>
+       <p>
+       Demo showing how desktop notifications are created and shown
+       using different browser implementations. Currently this demo 
+       is known to work in mobile Firefox (Android) and Chrome.
+        </p>
+        <a href="javascript:showNotification();">Show Notification</a>
+        <p id="feedback"></p>
+    </body>
+</html>
