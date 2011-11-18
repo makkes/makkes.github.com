@@ -9,10 +9,31 @@
           max-height: 200px;
           margin-right: 10px;
       }
+
+      #popup {
+          max-width: 100%;
+          background-color: white;
+      }
+
+      #popup > img {
+          max-width: 100%;
+      }
   </style>
-  <script type="text/javascript"
+  <script
       src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+  <script
+      src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
   <script>
+
+      var $dialog;
+
+      $(document).ready(function() {
+          $dialog = $("#popup").dialog({autoOpen: false, width: "100%"});
+          $dialog.click(function() {
+              $dialog.dialog("close");
+          });
+      });
+
       function handleFiles(files) {
           if(typeof files === "undefined" || !window.FileReader) {
               return;
@@ -33,11 +54,15 @@
               img.style.display = "none";
               container.appendChild(img);
               var reader = new FileReader();
-              reader.onload = (function(aImg, aContainer) { return function(e) {
+              reader.onload = (function(aImg, aContainer, fName) { return function(e) {
                       aImg.src = e.target.result;
+                      aImg.onclick = function(ev) {
+                          $("#popup > img").attr("src", this.src);
+                          $dialog.dialog("open");
+                      }
                       preview.appendChild(aContainer);
-                      $(aImg).fadeIn(2000);
-              } })(img, container);
+                      $(aImg).fadeIn('slow');
+              } })(img, container, file.name);
               reader.readAsDataURL(file);
           }
     }
@@ -61,5 +86,6 @@
     <input id="input" type="file" multiple="" accept="image/*" onchange="handleFiles(this.files)">
 
     <div id="preview"></div>
+    <div id="popup" style="display:none;"><img src=""></div>
 </body>
 </html>
