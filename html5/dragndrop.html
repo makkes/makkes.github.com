@@ -54,12 +54,13 @@ function handleFiles(files) {
     for(var i = 0; i < files.length; i++) {
 
         var displayContents = true;
+        var file = files[i];
         
-        if(files[i].fileSize > 1048576) {
+        if(file.fileSize > 1048576) {
             displayContents = false;
         }
         
-        if(!files[i].type.match("^text/.*")) {
+        if(!file.type.match("^text/.*")) {
             displayContents = false;
         }
 
@@ -70,7 +71,7 @@ function handleFiles(files) {
         var filename = document.getElementById("filename");
         var result = document.getElementById("result");
         
-        filename.innerHTML = files[i].name;
+        filename.innerHTML = file.name;
         
         reader.onprogress = function(e) {
             var loaded;
@@ -95,11 +96,13 @@ function handleFiles(files) {
             if(displayContents) {
                 result.value = reader.result;
             } else {
-                result.value = "Not displaying file contents since the file is too large or of an unknown type.";
+                result.value = "Not displaying file contents since the" +
+                    " file is too large (larger than 1 MB) or of an" +
+                    " unknown type (" + file.type + ")";
             }
         }
         
-        reader.readAsText(files[i]);
+        reader.readAsText(file);
     }
 }
 
