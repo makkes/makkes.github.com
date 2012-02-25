@@ -26,18 +26,26 @@ function init() {
 
     dropbox = document.getElementById("dropzone");
     dropbox.addEventListener("dragenter", dragenter, false);
+    dropbox.addEventListener("dragleave", dragleave, false);
     dropbox.addEventListener("dragover", dragover, false);
     dropbox.addEventListener("drop", drop, false);
 }
 
 function dragenter(e) {
-  e.stopPropagation();
-  e.preventDefault();
+    document.querySelector("#progress").innerHTML = "come on, drop it";
+    e.stopPropagation();
+    e.preventDefault();
 }
 
 function dragover(e) {
   e.stopPropagation();
   e.preventDefault();
+}
+
+function dragleave(e) {
+    document.querySelector("#progress").innerHTML = "coward";
+    e.stopPropagation();
+    e.preventDefault();
 }
 
 function drop(e) {
@@ -51,23 +59,33 @@ function drop(e) {
 }
 
 function handleFiles(files) {
+    document.querySelector("#progress").innerHTML = "loading...";
+
     for(var i = 0; i < files.length; i++) {
 
         var displayContents = true;
-        
-        if(files[i].fileSize > 1048576) {
+        var file = files[i];
+
+        if(file.size > 1048576) {
             displayContents = false;
         }
-        
-        if(!files[i].type.match("^text/.*")) {
+
+        if(!file.type.match("^image/.*")) {
             displayContents = false;
         }
 
         var filename = document.getElementById("filename");
         var result = document.getElementById("result");
-        
+
         filename.innerHTML = files[i].name;
-        result.src = window.URL.createObjectURL(files[i]);
+        if(displayContents) {
+            result.src = window.URL.createObjectURL(file);
+        } else {
+            alert("file too big for displaying (" +
+            file.size/1024/1024 + " MB > 1MB) or not an image");
+        }
+        document.querySelector("#progress").innerHTML = "";
+
     }
 }
 
@@ -91,6 +109,7 @@ if(window.addEventListener) {
             <div style="font-size: 250%;">Drag and drop an image from your file system onto the target</div>
             <img id="dropzone" src="target.png">
         </div>
+        <div id="progress"></div>
         <div>
             Filename:&nbsp;<span id="filename"></span>
         </div>
